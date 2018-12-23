@@ -7,6 +7,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 use AppBundle\Entity\Category;
 use AppBundle\Entity\Product;
 use AppBundle\Entity\Review;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 /**
  * LoadFixtureData
@@ -15,7 +16,6 @@ use AppBundle\Entity\Review;
  */
 class LoadFixtureData extends AbstractFixture
 {
-
     public function load(ObjectManager $manager)
     {
         $arrayCategory = [];
@@ -34,29 +34,60 @@ class LoadFixtureData extends AbstractFixture
             $product->setDelivery(new \DateTime($object['delivery']));
             $product->setDetails($object['details']);
 
-            $categoryName = $object['category'];
-            if (!in_array($categoryName, $arrayCategory)) {
-                //create category
-                $category = new Category();
-                $category->setName($object['category']);
-                $manager->persist($category);
-                $this->addReference('_'.$categoryName.'_', $category);
-                array_push($arrayCategory, $categoryName);
-            }
-            $product->setCategory($this->getReference('_'.$categoryName.'_'));
+            $categoryData = $this->createCategory($object, $arrayCategory, $manager);
+            $arrayCategory = reset($categoryData);
+
+            $product->setCategory($this->getReference('_'.end($categoryData).'_'));
             $manager->persist($product);
             $this->addReference('_product'.$key.'_', $product);
 
             //create review
-            foreach ($object['reviews'] as $objectReview)
-            {
-                $review = new Review();
-                $review->setContent($objectReview['content']);
-                $review->setRating($objectReview['rating']);
-                $review->setProduct($this->getReference('_product'.$key.'_'));
-                $manager->persist($review);
-            }
+            $this->createReview($object, $key, $manager);
         }
         $manager->flush();
+    }
+
+
+    /**
+     * createCategory
+     * @param $object
+     * @param array $arrayCategory
+     * @param ObjectManager $manager
+     *
+     * @return array
+     */
+    private function createCategory($object, array $arrayCategory, $manager)
+    {
+        $categoryName = $object['category'];
+        if (!in_array($categoryName, $arrayCategory)) {
+            //create category
+            $category = new Category();
+            $category->setName($object['category']);
+            $manager->persist($category);
+            $this->addReference('_'.$categoryName.'_', $category);
+            array_push($arrayCategory, $categoryName);
+        }
+
+        return [$arrayCategory, $categoryName];
+    }
+
+    /**
+     * createReview
+     * @param $object
+     * @param int $key
+     * @param ObjectManager $manager
+     *
+     * @return Review
+     */
+    private function createReview($object, $key, $manager)
+    {
+        foreach ($object['reviews'] as $objectReview)
+        {
+            $review = new Review();
+            $review->setContent($objectReview['content']);
+            $review->setRating($objectReview['rating']);
+            $review->setProduct($this->getReference('_product'.$key.'_'));
+            $manager->persist($review);
+        }
     }
 }
