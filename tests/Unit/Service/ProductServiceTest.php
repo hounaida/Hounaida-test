@@ -30,7 +30,6 @@ class ProductServiceTest extends kernelTestCase
         self::bootKernel();
         $this->container = self::$kernel->getContainer();
         $this->em = $this->container->get('doctrine.orm.entity_manager');
-
     }
 
     public function testGetAll()
@@ -48,6 +47,4 @@ class ProductServiceTest extends kernelTestCase
 
         $this->assertEquals('617', reset($products)->getCategory()->getId());
     }
-
-
 }

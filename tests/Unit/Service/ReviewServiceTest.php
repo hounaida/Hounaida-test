@@ -31,7 +31,6 @@ class ReviewServiceTest extends WebTestCase
         self::bootKernel();
         $this->container = self::$kernel->getContainer();
         $this->em = $this->container->get('doctrine.orm.entity_manager');
-
     }
 
     public function testFindByCriteria()
@@ -41,5 +40,4 @@ class ReviewServiceTest extends WebTestCase
 
         $this->assertEquals('501', reset($reviews)->getProduct()->getId());
     }
-
 }

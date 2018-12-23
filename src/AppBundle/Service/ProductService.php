@@ -75,5 +75,4 @@ class ProductService
         $products = $this->productManager->findByCriteria($criteria);
         return $products;
     }
-
 }
