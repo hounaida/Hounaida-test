@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+ {% block stylesheets %}
+     <link href="{{ asset('css/table.css') }}" rel="stylesheet">
+ {% endblock %}
+{% block body %}
+    <br>
+   <h1 align="center"> List of product </h1>
+    <br>
+    <div class="styled-select blue semi-square">
+        <select id="categories">
+            <option selected="selected" disabled>Select category</option>
+            {% for category in categoryList %}
+                <option value="{{ category.id }}">{{ category.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+<br>
+    <table class="customers" id="products">
+        <tr>
+            <th> Product Name </th>
+            <th> Base Price </th>
+            <th> Brand </th>
+            <th> Product Material </th>
+            <th> Delivery </th>
+            <th> Details </th>
+            <th> Category </th>
+            <th> Reviews </th>
+        </tr>
+
+        {% for product in products %}
+            <tr {% if loop.index is odd %}class="color"{% endif %}>
+                <td> <img src="{{ product.imageUrl }}" width="40px" height="50px"/>
+                {{ product.productName }}</td>
+                <td>{{ product.basePrice }}</td>
+                <td>{{ product.brand }}</td>
+                <td>{{ product.productMaterial }}</td>
+                <td>{{ product.delivery | date('Y-m-d') }}</td>
+                <td>{{ product.details }}</td>
+                <td>{{ product.category.name }}</td>
+                <td>
+                    {% if product.reviews|length > 0 %}
+                    <a href="{{ path('reviews_by_product', {'idProduct': product.id }) }}" target="_blank">
+                        <img src="{{ asset('pictodetails.png') }}" width="30" height="40">
+                    </a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+    <div class="pagination">
+        {{ knp_pagination_render(products) }}
+    </div>
+{% endblock %}
+{% block javascripts %}
+    <script src=" {{ asset('js/jquery-3.3.1.min.js') }}"></script>
+    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+    <script src=" {{ asset('js/search-product.js') }}"></script>
+    <script>
+        var TWIG ={};
+        TWIG.imgDetails= '{{ asset("pictodetails.png")}}';
+    </script>
+{% endblock %}
