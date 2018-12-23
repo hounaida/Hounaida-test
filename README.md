@@ -21,3 +21,19 @@ In order to load the sample data, run the below commands:
 $ cd /var/www/html/hounaida-app
 $ php bin/console doctrine:fixtures:load
 ```
+
+**Enjoy!** [http://localhost/hounaida-app/web/app_dev.php/products](http://localhost/hounaida-app/web/app_dev.php/products)   
+
+### Run Unit & functional testing 
+
+#### Unit testing
+
+```
+$ php ./vendor/bin/simple-phpunit tests/Unit
+```
+
+#### Functional testing 
+
+```
+$ php ./vendor/bin/simple-phpunit tests/Fonctional
+```
