@@ -36,8 +36,9 @@ class ReviewServiceTest extends WebTestCase
     public function testFindByCriteria()
     {
         $reviewManager= new ReviewManager($this->em);
-        $reviews = $reviewManager->findByCriteria(['product' => '501']);
+        $product = $this->em->getRepository("AppBundle:Product")->findOneBy([]);
+        $reviews = $reviewManager->findByCriteria(['product' => $product->getId()]);
 
-        $this->assertEquals('501', reset($reviews)->getProduct()->getId());
+        $this->assertNotNull($reviews);
     }
 }

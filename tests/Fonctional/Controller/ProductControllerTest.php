@@ -23,8 +23,10 @@ class ProductControllerTest extends WebTestCase
     public function testFindByCategory()
     {
         $client = static::createClient();
-
-        $client->request('GET', '/search-product/1');
+        $container = $client->getContainer();
+        $em = $container->get('doctrine.orm.entity_manager');
+        $product = $em->getRepository("AppBundle:Product")->findOneBy([]);
+        $client->request('GET', '/search-product/'.$product->getId());
 
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
     }

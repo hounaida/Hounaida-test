@@ -14,8 +14,10 @@ class ReviewControllerTest extends WebTestCase
     public function testGetAll()
     {
         $client = static::createClient();
-
-        $client->request('GET', '/reviews/501');
+        $container = $client->getContainer();
+        $em = $container->get('doctrine.orm.entity_manager');
+        $review = $em->getRepository("AppBundle:Review")->findOneBy([]);
+        $client->request('GET', '/reviews/'.$review->getId());
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
     }
 
